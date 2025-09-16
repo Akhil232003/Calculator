@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .buttons {
+            width: 100%;
+            height: 60px;
+            font-size: 28px;
+            text-align: center;
+            color: white;
+            box-shadow: 0px 0px 5px gray;
+            background-color: #212529;
+            border-radius: 5px;
+            transition: all 800ms;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @media (max-width: 768px) {
+            .buttons {
+                height: 55px;
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .buttons {
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .buttons {
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+        .buttons:active {
+            transform: scale(0.8);
+        }
+        .parent_division {
+            padding: 15px;
+            background-color: #212529;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .parent_division {
+                padding: 12px;
+                margin: 20px auto;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .parent_division {
+                padding: 10px;
+                margin: 15px 10px;
+                max-width: none;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .order-1 {
+                margin-bottom: 20px;
+            }
+        }
+        #textarea_inputbox {
+            width: 100%;
+            background-color: #212529;
+            color: white;
+            border-color: #0d6efd !important;
+            text-align: right;
+            font-size: 2em;
+            padding: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            #textarea_inputbox {
+                font-size: 1.8em;
+                padding: 8px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            #textarea_inputbox {
+                font-size: 1.5em;
+                padding: 6px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            #textarea_inputbox {
+                font-size: 1.3em;
+                padding: 5px;
+            }
+        }
+        /* New styles for the layout */
+        .content-container {
+            padding: 15px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .content-container {
+                padding: 10px;
+                text-align: center;
+            }
+            
+            .content-container h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content-container p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content-container {
+                padding: 8px;
+            }
+            
+            .content-container h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content-container p {
+                font-size: 0.85rem;
+            }
+        }
+        
+        .image-container {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .image-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .image-container svg {
+                width: 280px;
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .image-container svg {
+                width: 250px;
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .image-container svg {
+                width: 220px;
+                height: 160px;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .math-symbols {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.1);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .symbol-1 { top: 10%; left: 10%; animation-delay: 0s; }
+        .symbol-2 { top: 20%; right: 15%; animation-delay: 5s; }
+        .symbol-3 { bottom: 30%; left: 5%; animation-delay: 10s; }
+        .symbol-4 { bottom: 10%; right: 10%; animation-delay: 15s; }
+    </style>
+</head>
+<body>
+    <!-- Floating math symbols -->
+    <div class="math-symbols symbol-1">∑</div>
+    <div class="math-symbols symbol-2">∫</div>
+    <div class="math-symbols symbol-3">π</div>
+    <div class="math-symbols symbol-4">∞</div>
+
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <div class="col-lg-8 col-md-12 content-container d-flex flex-column justify-content-center order-2 order-lg-1">
+                <h1>Welcome to Smart Calculator! 🧮</h1>
+                <p>This is a fully responsive calculator with a beautiful interface. You can use it to perform basic arithmetic operations with both mouse clicks and keyboard input.</p>
+                <p>The layout is designed to work seamlessly on all devices, from mobile phones to desktops. Try it out and experience smooth calculations!</p>
+                
+                <div class="image-container mt-4 d-flex justify-content-center">
+                    <svg width="350" height="250" viewBox="0 0 350 250" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Calculator body -->
+                        <defs>
+                            <linearGradient id="calcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#34495e;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2d2d2d;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <rect x="50" y="30" width="250" height="190" rx="20" ry="20" fill="url(#calcGradient)" stroke="#34495e" stroke-width="3"/>
+                        
+                        <!-- Screen -->
+                        <rect x="75" y="55" width="200" height="50" rx="8" ry="8" fill="url(#screenGradient)" stroke="#333" stroke-width="2"/>
+                        <text x="265" y="85" font-family="Arial, sans-serif" font-size="20" fill="#00ff41" text-anchor="end">123,456.78</text>
+                        
+                        <!-- Buttons Grid -->
+                        <!-- Row 1 -->
+                        <circle cx="100" cy="130" r="15" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                        <text x="100" y="136" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">C</text>
+                        
+                        <circle cx="140" cy="130" r="15" fill="#95a5a6" stroke="#7f8c8d" stroke-width="2"/>
+                        <text x="140" y="136" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">±</text>
+                        
+                        <circle cx="180" cy="130" r="15" fill="#95a5a6" stroke="#7f8c8d" stroke-width="2"/>
+                        <text x="180" y="136" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">%</text>
+                        
+                        <circle cx="220" cy="130" r="15" fill="#f39c12" stroke="#e67e22" stroke-width="2"/>
+                        <text x="220" y="136" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">÷</text>
+                        
+                        <!-- Row 2 -->
+                        <circle cx="100" cy="160" r="15" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+                        <text x="100" y="166" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">7</text>
+                        
+                        <circle cx="140" cy="160" r="15" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+                        <text x="140" y="166" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">8</text>
+                        
+                        <circle cx="180" cy="160" r="15" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+                        <text x="180" y="166" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">9</text>
+                        
+                        <circle cx="220" cy="160" r="15" fill="#f39c12" stroke="#e67e22" stroke-width="2"/>
+                        <text x="220" y="166" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">×</text>
+                        
+                        <!-- Row 3 -->
+                        <circle cx="100" cy="190" r="15" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+                        <text x="100" y="196" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">4</text>
+                        
+                        <circle cx="140" cy="190" r="15" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+                        <text x="140" y="196" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">5</text>
+                        
+                        <!-- Mathematical symbols floating around -->
+                        <text x="20" y="60" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.2)" transform="rotate(-15 20 60)">+</text>
+                        <text x="310" y="90" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.2)" transform="rotate(25 310 90)">×</text>
+                        <text x="25" y="180" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.2)" transform="rotate(45 25 180)">÷</text>
+                        <text x="320" y="200" font-family="Arial, sans-serif" font-size="26" fill="rgba(255,255,255,0.2)" transform="rotate(-30 320 200)">-</text>
+                        <text x="15" y="120" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.15)">√</text>
+                        <text x="325" y="140" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.15)">²</text>
+                        
+                        <!-- Decorative elements -->
+                        <circle cx="30" cy="40" r="4" fill="rgba(255,255,255,0.3)"/>
+                        <circle cx="320" cy="50" r="3" fill="rgba(255,255,255,0.25)"/>
+                        <circle cx="20" cy="220" r="3.5" fill="rgba(255,255,255,0.25)"/>
+                        <circle cx="330" cy="230" r="4" fill="rgba(255,255,255,0.3)"/>
+                        
+                        <!-- Light reflection on calculator -->
+                        <ellipse cx="120" cy="80" rx="30" ry="15" fill="rgba(255,255,255,0.1)" transform="rotate(-20 120 80)"/>
+                    </svg>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>✨ Features:</h5>
+                    <ul>
+                        <li>🖱️ Click buttons or use your keyboard</li>
+                        <li>📱 Works on all devices</li>
+                        <li>⚡ Instant calculations</li>
+                        <li>🎨 Beautiful modern design</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12 d-flex align-items-center justify-content-center order-1 order-lg-2">
+            <div class="parent_division rounded shadow mt-5 me-5">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <textarea class="form-control" rows="3" id="textarea_inputbox" name="text" readonly></textarea>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-3 mb-3">
+                    <div class="col-3">
+                        <div class="border buttons">c</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">()</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">%</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">/</div>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-3 mb-3">
+                    <div class="col-3">
+                        <div class="border buttons">7</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">8</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">9</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">x</div>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-3 mb-3">
+                    <div class="col-3">
+                        <div class="border buttons">4</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">5</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">6</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">-</div>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-3 mb-3">
+                    <div class="col-3">
+                        <div class="border buttons">1</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">2</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">3</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">+</div>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-3 mb-3">
+                    <div class="col-6">
+                        <div class="border buttons">0</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">.</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border buttons">=</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('textarea_inputbox');
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+        let shouldResetDisplay = false;
+
+        // Add click event listeners to all buttons
+        document.querySelectorAll('.buttons').forEach(button => {
+            button.addEventListener('click', function() {
+                const value = this.textContent;
+                handleInput(value);
+            });
+        });
+
+        function handleInput(value) {
+            if (value >= '0' && value <= '9' || value === '.') {
+                handleNumber(value);
+            } else if (value === '+' || value === '-' || value === 'x' || value === '/' || value === '%') {
+                handleOperator(value);
+            } else if (value === '=') {
+                calculate();
+            } else if (value === 'c') {
+                clear();
+            } else if (value === '()') {
+                handleParentheses();
+            }
+        }
+
+        function handleNumber(num) {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+            
+            if (num === '.' && currentInput.includes('.')) return;
+            
+            currentInput += num;
+            display.value = currentInput;
+        }
+
+        function handleOperator(op) {
+            if (currentInput === '' && previousInput === '') return;
+            
+            if (previousInput !== '' && currentInput !== '' && operator !== '') {
+                calculate();
+            }
+            
+            operator = op;
+            previousInput = currentInput || previousInput;
+            currentInput = '';
+            display.value = previousInput + ' ' + operator + ' ';
+        }
+
+        function calculate() {
+            if (previousInput === '' || currentInput === '' || operator === '') return;
+            
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case 'x':
+                    result = prev * current;
+                    break;
+                case '/':
+                    if (current === 0) {
+                        display.value = 'Error: Division by zero';
+                        reset();
+                        return;
+                    }
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            
+            // Round to avoid floating point precision issues
+            result = Math.round(result * 100000000) / 100000000;
+            
+            display.value = result;
+            currentInput = result.toString();
+            previousInput = '';
+            operator = '';
+            shouldResetDisplay = true;
+        }
+
+        function clear() {
+            currentInput = '';
+            previousInput = '';
+            operator = '';
+            shouldResetDisplay = false;
+            display.value = '';
+        }
+
+        function reset() {
+            setTimeout(() => {
+                clear();
+            }, 2000);
+        }
+
+        function handleParentheses() {
+            // Simple parentheses toggle for display purposes
+            if (currentInput.includes('(')) {
+                currentInput = currentInput.replace('(', '').replace(')', '');
+            } else if (currentInput !== '') {
+                currentInput = '(' + currentInput + ')';
+            }
+            display.value = currentInput;
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9' || key === '.') {
+                handleInput(key);
+            } else if (key === '+' || key === '-' || key === '/' || key === '%') {
+                handleInput(key);
+            } else if (key === '*') {
+                handleInput('x');
+            } else if (key === 'Enter' || key === '=') {
+                handleInput('=');
+            } else if (key === 'Escape' || key.toLowerCase() === 'c') {
+                handleInput('c');
+            } else if (key === 'Backspace') {
+                if (currentInput.length > 0) {
+                    currentInput = currentInput.slice(0, -1);
+                    display.value = currentInput;
+                }
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'980189c1a14285c3',t:'MTc1ODAzODAyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
